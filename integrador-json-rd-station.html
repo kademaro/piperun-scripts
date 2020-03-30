@@ -1,0 +1,34 @@
+<script>
+let enviar_dados = function() {
+  let hash = "payka8as2x0l6ww7l2kpu6xaioc61t";
+  let dados = {
+    "leads": [{
+      "id":         jQuery('#email').val(), // identificador para não duplicar lead
+      "title":      jQuery('#name').val(),
+      "name":       jQuery('#name').val(),
+      "email":      jQuery('#email').val(),
+      "company":    jQuery('#company').val(),
+      "job_title":  jQuery('#job_title').val(),
+      "last_conversion": {
+        "source": 'Formulário RDStation - EVENTO'
+      },
+      "tags": [
+        "RD"
+      ],
+      "notes": [
+        "Teste de nota via RD",
+      ]
+    }]
+  };
+  $.ajax({
+    type: "post",
+    data: JSON.stringify(dados),
+    dataType: "json",
+    url: "https://app.pipe.run/webservice/integradorJson?hash=" + hash + "&duplicar=true"
+  });
+};
+
+window.addEventListener("load",function() {
+  document.getElementById('conversion-form').addEventListener("submit", enviar_dados);
+});
+</script>
