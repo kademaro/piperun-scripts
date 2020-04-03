@@ -10,6 +10,7 @@ enviar para webservice de recebimento de leads Piperun, via json.
     <source src="https://www.loom.com/embed/6117513d276745da935f95282f4a7d97" type="video/mp4">
   </video>
 </div>
+<source src="https://www.loom.com/embed/6117513d276745da935f95282f4a7d97" type="video/ogg" />
 <div>
   <a href="https://www.loom.com/share/6117513d276745da935f95282f4a7d97">Assista o tutorial</a>
 </div>
