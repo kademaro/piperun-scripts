@@ -9,7 +9,7 @@ dispara automaticamente uma proposta pro email informado.
 ```
 
 Fluxo:
-http://piperun-doc-standards-github.s3.amazonaws.com/piperun-scripts/proposal-by-email.png
+<img src="http://piperun-doc-standards-github.s3.amazonaws.com/piperun-scripts/proposal-by-email.png">
 
 Vídeo demonstrando funcionamento:
 https://www.loom.com/share/95524be62f354e1093bae6ba32bf9106
