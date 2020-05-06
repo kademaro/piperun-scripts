@@ -4,7 +4,8 @@ Scripts úteis
 ```
 Desafio:
 Formulário de contato que envia propostas:
-- Ao preencher nome, email e selecionar a proposta, o sistema dispara automaticamente uma proposta pro email informado.
+- Ao preencher nome, email e selecionar a proposta, o sistema 
+dispara automaticamente uma proposta pro email informado.
 ```
 
 Vídeo demonstrando funcionamento:
@@ -17,4 +18,5 @@ Pré-requisitos:
 - SMTP configurado na conta (caso de ação automática de disparo de email)
 
 Código fonte de exemplo:
+
 https://github.com/dinhogehm/piperun-scripts/blob/master/form-gerador-de-propostas/form-example.html
