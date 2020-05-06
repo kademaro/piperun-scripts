@@ -1,7 +1,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<title>Teste de proposta e formulário</title>
+	<title>Proposta online</title>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta name="robots" content="noindex, nofollow">
 	<meta name="googlebot" content="noindex, nofollow">
@@ -18,9 +18,9 @@
 		<form role="form">
 			<br style="clear:both">
 			<div style="text-align:center;">
-				<img src="https://crmpiperun.com/wp-content/uploads/2017/04/piperun-crm-vendas-logodark.png" width="200">
+				<img src="https://crmpiperun.com/wp-content/uploads/2019/01/piperun-sistema-crm-vendas.png" width="200">
 			</div>
-			<h3 style="margin-bottom: 25px; text-align: center;">Seu formulário de contato</h3>
+			<h3 style="margin-bottom: 25px; text-align: center;">Seu formulário de proposta</h3>
 			<div class="row">
 				<div class="col-md-3">
 					<div class="form-group">
@@ -68,7 +68,9 @@
 					</div>
 				</div>
 			</div>
-			<button type="button" id="submit" name="submit" class="btn btn-primary pull-right">Solicitar proposta</button>
+			<button type="button" id="submit" class="btn btn-primary pull-right hidden">Solicitar proposta</button>
+			<button type="button" id="sending" class="btn btn-primary pull-right hidden">Enviando...</button>
+			<button type="button" id="sended" class="btn btn-success pull-right hidden">Solicitação enviada!</button>
 		</form>
 	</div>
 </div>
@@ -77,7 +79,30 @@
 	const token = "3c6a7e798e2fdf656524f6180918195b";
 	let items = [];
 	let selectedItems = [];
+	let stage_id_trigger_email = 81243;
     mountSelect2Items(token);
+
+    function buttonStatus(status = 0) {
+
+        $('#submit').addClass('hidden');
+        $('#sending').addClass('hidden');
+        $('#sended').addClass('hidden');
+
+        switch (status) {
+
+            case 0:
+                $('#submit').removeClass('hidden');
+            break;
+            case 1:
+                $('#sending').removeClass('hidden');
+            break;
+            case 2:
+                $('#sended').removeClass('hidden');
+            break;
+
+        }
+    }
+    buttonStatus();
 
     //Função que monta um elemento Select2 Multiple para realizar o vínculo da proposta com os items
     function mountSelect2Items(token) {
@@ -126,7 +151,7 @@
         addItem($('#itemsList').select2('data'), $('#qtd').val());
     })
 
-    let enviar_dados = function () {
+    let createDeal = function () {
         let hash = $('#hash').val();
         let dados = {
             "leads": [{
@@ -134,6 +159,7 @@
                 "title": $('#name').val(),
                 "name": $('#name').val(),
                 "email": $('#email').val(),
+                "user": "osvaldo@odig.net",
                 "company": $('#company').val(),
                 "mobile_phone": $('#mobile').val(),
                 "last_conversion": {
@@ -151,13 +177,14 @@
             dataType: "json",
             url: "https://app.pipe.run/webservice/integradorJson?hash=hoamtoho4p49vletbkgvgs68187npmh&duplicar=true"
         }).then(function (result) {
-            if (items) {
+            if (selectedItems) {
+                buttonStatus(1);
                 createProposal(token, result.data.id[0], selectedItems)
             }
         });
     };
 
-    $(document).on("click", "#submit", enviar_dados);
+    $(document).on("click", "#submit", createDeal);
 
     function getCounter(token, counter_id) {
 
@@ -176,53 +203,58 @@
         });
     }
 
-    // refer Deal_id = 5645902
+    // refer deal_id = 5645902
     function createProposal(token, deal_id, items) {
-
-        if (!deal_id) {
-            deal_id = 5645902;
-        }
 
         let date = new Date();
         let expiration_date = new Date();
         let expiration_days = 2;
         expiration_date.setDate(date.getDate() + expiration_days);
 
-        let counter_id = 1;
+        let counter_id = 422;
         let counter = getCounter(token, counter_id);
-        let settings = {
-            "url": "http://api.pipe.run/v1/proposals",
-            "method": "POST",
-            "timeout": 0,
-            "headers": {
-                "Content-Type": "application/json",
-                "token": token
-            },
-            "data": {
-                "user_id": 1,
-                "deal_id": deal_id,
+
+        let dados =
+	        {
+	            "account_id": 1,
+	            "user_id": 1,
+	            "deal_id": deal_id,
                 "currency_id": 1,
                 "proposal_counter_id": counter_id,
                 "name": counter,
-                "discount_value": 0,
-                "value": 0,
-                "value_mrr": 0,
+	            "value": 0,
+	            "value_mrr": 1111.11,
 	            "status": 0,
-                "introduction": null,
+	            "introduction": "<p>qwrqwrw</p>",
                 "deal_date": date.getTime(),
                 "expiration_date": expiration_date,
-                "delivery_forecast_date": null,
-                "discount_type": 0,
-                "payment_method": null,
-                "observation": null,
-                "visualized_in": null,
-                "proposal_layout_id": null,
+	            "url": "",
                 "items": items
-            }
-        };
+	        };
 
-        $.ajax(settings).done(function (response) {
-            // console.log(response);
+        $.ajax({
+            type: "post",
+            data: JSON.stringify(dados),
+            dataType: "json",
+            url: "http://api.pipe.run/v1/proposals",
+            headers: {
+                "Content-Type": "application/json",
+                "token": token
+            }
+        }).then(function () {
+            buttonStatus(2);
+            $.ajax({
+                type: "PUT",
+                data: JSON.stringify({"stage_id":stage_id_trigger_email}),
+                dataType: "json",
+                url: "http://api.pipe.run/v1/deals/" + deal_id,
+                headers: {
+                    "Content-Type": "application/json",
+                    "token": token
+                }
+            }).then(function () {
+                alert("Proposta enviada com sucesso, em alguns instantes você receberá a proposta em seu e-mail.")
+            });
         });
     }
 
