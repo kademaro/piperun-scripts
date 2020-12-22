@@ -37,7 +37,16 @@
                 <div class="col-sm-4"></div>
                 <div class="col-sm-4">
                     <p>Remover o atributo <strong>segmento</strong> das empresas.</p>
-                    <button class="btn btn-warning btn-lg btn-block" type="button" @click="updateCompanies" :disabled="updateButton">Atualizar</button>
+                    <button class="btn btn-warning btn-lg btn-block" type="button" @click="updateCompanies">Atualizar</button>
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+            <div style="padding-top:25px;"></div>
+            <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4">
+                    <p>Buscar todas os segmentos.</p>
+                    <button class="btn btn-primary btn-lg btn-block" type="button" @click="getSegments" :disabled="getButton">Buscar</button>
                 </div>
                 <div class="col-sm-4"></div>
             </div>
@@ -61,11 +70,13 @@ export default {
     name: 'App',
     data() {
         return {
-            total: 0,
-            total_pages: 0,
-            endpoint: '/companies?show=200&page=',
+            total_companies: 0,
+            total_pages_companies: 0,
+            total_segments: 0,
+            total_pages_segments: 0,
             companies: [],
-            page: 1,
+            segments: [],
+            page: 0,
             getButton: true,
             updateButton: true,
             deleteButton: true
@@ -73,8 +84,10 @@ export default {
     },
     methods: {
         getCompanies() {
-            while (this.page <= this.total_pages) {
-                http.get(this.endpoint + this.page)
+            this.page = 1
+
+            while (this.page <= this.total_pages_companies) {
+                http.get('/companies?show=200&page=' + this.page)
                     .then(response => {
                         response.data.data.forEach(element => {
                             this.companies.push(element.id)
@@ -88,9 +101,9 @@ export default {
             }
         },
         updateCompanies() {
-            if (this.companies.length == this.total) {
-                this.companies.forEach(element => {
-                    http.put('/companies/' + element.id, {
+            if (this.companies.length == this.total_companies) {
+                for (let i = 0; i < this.companies.length; i++) {
+                    http.put('/companies/' + this.companies[i], {
                             'segment_id': null
                         })
                         .then(response => {
@@ -99,21 +112,60 @@ export default {
                         .catch(e => {
                             console.log(e)
                         })
-                })
+                }
             } else {
                 alert('Problema ao atualizar empresas. A quantidade total não foi totalmente carregada.')
             }
         },
-        deleteSegments() {
+        getSegments() {
+            this.page = 1
+            
+            while (this.page <= this.total_pages_segments) {
+                http.get('/segments?show=200&page=' + this.page)
+                    .then(response => {
+                        response.data.data.forEach(element => {
+                            this.segments.push(element.id)
+                        });
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
 
+                this.page++
+            }
+        },
+        deleteSegments() {
+            if (this.segments.length == this.total_segments) {
+                for (let i = 0; i < this.segments.length; i++) {
+                    http.delete('/segments/' + this.segments[i])
+                        .then(response => {
+                            console.log(response)
+                        })
+                        .catch(e => {
+                            console.log(e)
+                        })
+                }
+            } else {
+                alert('Problema ao atualizar empresas. A quantidade total não foi totalmente carregada.')
+            }
         }
     },
     async mounted() {
-        http.get(this.endpoint + '0')
+        http.get('/companies?show=200&page=0')
             .then(response => {
-                this.total = response.data.meta.total
-                this.total_pages = response.data.meta.total_pages
+                this.total_companies = response.data.meta.total
+                this.total_pages_companies = response.data.meta.total_pages
                 this.getButton = false
+            })
+            .catch(e => {
+                console.log(e)
+            })
+
+        http.get('/segments?show=200&page=0')
+            .then(response => {
+                this.total_segments = response.data.meta.total
+                this.total_pages_segments = response.data.meta.total_pages
+                this.deleteButton = false
             })
             .catch(e => {
                 console.log(e)
