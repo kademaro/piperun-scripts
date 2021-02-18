@@ -1,4 +1,5 @@
 // METODO PARA COLETAR DADOS DO FORMULARIO E ENVIAR PARA O PIPERUN, COM DADOS DE UTM.
+
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -60,7 +61,7 @@ function enviarDados() {
             "source" : "Fale com um consultor"
         },
         "custom_fields": {
-            "URL Conversao" : "https://crmpiperun.com/crm-energia-solar/",
+            "URL Conversao" : location.href,
             "Segmento" : segment,
             "Número de vendedores" : salespeople,
             "utm_source": utm_source,
