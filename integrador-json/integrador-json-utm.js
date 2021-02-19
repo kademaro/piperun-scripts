@@ -1,12 +1,14 @@
 // METODO PARA COLETAR DADOS DO FORMULARIO E ENVIAR PARA O PIPERUN, COM DADOS DE UTM.
 // dependencia do script sessionStart.min.js
+// dependencia do google analytics.
+// dependia do google tag manager.
 
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
     results = regex.exec(location.search);
     if (sessionStart && sessionStart[name]) {
-        return sessionStart[name];
+        return (sessionStart[name] === null || sessionStart[name] === "" || sessionStart[name] === " " || sessionStart[name] === undefined) ? "" : sessionStart[name];
     }
 
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
@@ -52,12 +54,14 @@ function enviarDados() {
 
     // RULES
     let rules = {
-        "update": true
+        "update": true,
+        "situation": "unfreezed, undeleted",
+        "status": "open"
     }
 
     // LEAD
     let lead = [{
-        "id": name,
+        "id": email,
         "title": dataHora + " " + "Fale Energia Solar",
         "name": name,
         "email": email,
