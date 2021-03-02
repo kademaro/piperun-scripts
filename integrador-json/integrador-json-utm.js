@@ -55,8 +55,9 @@ function enviarDados() {
     // RULES
     let rules = {
         "update": true,
-        "situation": "unfreezed, undeleted",
-        "status": "open"
+        "status": "open",
+        "equal_pipeline": true,
+        "filter_status_update": "open",
     }
 
     // LEAD
