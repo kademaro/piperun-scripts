@@ -4,6 +4,13 @@
     }
  }
 
+// validador simples, valida apenas a quantidade de digitos informados.                           
+function validatePhone(phone) {
+  let phoneNumber = phone.value.replace(/\D/g,'');
+    console.log(phoneNumber.length >= 10, phoneNumber);
+  return phoneNumber.length >= 10;
+}                           
+                           
 
 function validateForm(form) {
     let errors_count = 0
