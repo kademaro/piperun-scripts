@@ -1,3 +1,10 @@
+ document.addEventListener('click', (e) => {
+    if(e.composedPath()[0].id === 'id-do-botao') { 
+        //// bloco de código
+    }
+ }
+
+
 function validateForm(form) {
     let errors_count = 0
     Object.entries(form.querySelectorAll('input')).map( (input) => {
